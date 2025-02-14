@@ -319,6 +319,7 @@ class StreamWrapper:
         self.choice_buffers = []
         self._span_started = False
         self.capture_content = capture_content
+        self.response = stream.response
 
         self.event_logger = event_logger
         self.setup()
