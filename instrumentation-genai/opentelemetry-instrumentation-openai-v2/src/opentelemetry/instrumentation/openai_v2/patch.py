@@ -319,7 +319,17 @@ class StreamWrapper:
         self.choice_buffers = []
         self._span_started = False
         self.capture_content = capture_content
-        self.response = stream.response
+        try:
+            from langfuse.openai import LangfuseResponseGeneratorAsync
+            if isinstance(stream, LangfuseResponseGeneratorAsync):
+                # NOTE: Langfuse does not wrap the stream object properly, so it throws an AttributeError exception.
+                # This is a workaround to fix until Langfuse fixes the issue.
+                # related issue: https://github.com/langfuse/langfuse/issues/5361
+                self.response = stream.response.response
+            else:
+                self.response = stream.response
+        except ImportError:
+            self.response = stream.response
 
         self.event_logger = event_logger
         self.setup()
